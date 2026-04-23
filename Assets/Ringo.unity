@@ -268,7 +268,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 10
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -366,9 +366,9 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 9d24b6fceaf8e4bca9fbbe9c5957ac11, type: 2}
   mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   resolution: 500
-  function: 4
+  function: 5
   transitionMode: 0
-  functionDuration: 5
+  functionDuration: 20
   transitionDuration: 1
 --- !u!4 &1961126447
 Transform:
