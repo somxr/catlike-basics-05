@@ -97,13 +97,73 @@ float3 Sphere (float u, float v, float t) {
     return p;
 }
 
+/* --- TORUS VARIATIONS --- */
+
+/* 0. Original Version */
+// float3 Torus (float u, float v, float t) {
+//     float r1 = 0.7 + 0.1;
+//     float r2 = 0.15 + 0.05 * sin(PI * (50.0 * u  + 8.0 * v + 3.0 * t));
+//     float s = r2 * cos(PI * v) + r1;
+//     float3 p;
+//     p.x = s * sin(PI * u);
+//     p.y = r2 * sin(PI * v);
+//     p.z = s * cos(PI * u);
+//     return p;
+// }
+
+/* 1. The Double Spiral (Corkscrew Detail) */
+// float3 Torus (float u, float v, float t) {
+//     float r1 = 0.7;
+//     float r2 = 0.15 + 0.05 * sin(PI * (8.0 * u + 4.0 * v + 2.0 * t));
+//     float twist = sin(PI * (2.0 * u + t)); 
+//     float angle = PI * (v + twist);
+//     float s = r2 * cos(angle) + r1;
+//     float3 p;
+//     p.x = s * sin(PI * u);
+//     p.y = r2 * sin(angle);
+//     p.z = s * cos(PI * u);
+//     return p;
+// }
+
+/* 2. Travelling Pulse (Nested Volumes) */
+// float3 Torus (float u, float v, float t) {
+//     float r1 = 0.7;
+//     float bulge = 0.06 * sin(PI * (2.0 * u + 0.5 * t)); 
+//     float ripples = 0.02 * sin(PI * (20.0 * u + 10.0 * v + 4.0 * t));
+//     float r2 = 0.15 + bulge + ripples;
+//     float s = r2 * cos(PI * v) + r1;
+//     float3 p;
+//     p.x = s * sin(PI * u);
+//     p.y = r2 * sin(PI * v);
+//     p.z = s * cos(PI * u);
+//     return p;
+// }
+
+/* 3. The Centrifuge (Internal Orbit) */
+// float3 Torus (float u, float v, float t) {
+//     float r1 = 0.7;
+//     float r2 = 0.15 + 0.05 * sin(PI * (8.0 * u + t));
+//     float angle = PI * v + t; 
+//     float s = r2 * cos(angle) + r1;
+//     float3 p;
+//     p.x = s * sin(PI * u);
+//     p.y = r2 * sin(angle);
+//     p.z = s * cos(PI * u);
+//     return p;
+// }
+
+/* 4. Combined (The "Living" Torus) */
 float3 Torus (float u, float v, float t) {
-    float r1 = 0.7 + 0.1 * sin(PI * (8.0 * u + 0.5 * t));
-    float r2 = 0.15 + 0.05 * sin(PI * (16.0 * u + 8.0 * v + 3.0 * t));
-    float s = r2 * cos(PI * v) + r1;
+    float r1 = 0.7 + 0.02 * sin(PI * (1.0 * u + 0.5 * t));
+    float bulge = 0.05 * sin(PI * (4.0 * u + t));
+    float ripples = 0.05 * sin(PI * (30.0 * u + 10.0 * v + 5.0 * t));
+    float r2 = 0.3 + bulge + ripples;
+    float twist = 0.5 * sin(PI * (u + t * 0.5));
+    float angle = PI * (v + twist);
+    float s = r2 * cos(angle) + r1;
     float3 p;
     p.x = s * sin(PI * u);
-    p.y = r2 * sin(PI * v);
+    p.y = r2 * sin(angle);
     p.z = s * cos(PI * u);
     return p;
 }
