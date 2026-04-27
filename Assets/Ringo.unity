@@ -404,6 +404,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Torus_walkway
       objectReference: {fileID: 0}
+    - target: {fileID: 1151388028547126963, guid: f06112a375920b24291963a5f2111f7e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1151388028547126963, guid: f06112a375920b24291963a5f2111f7e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1151388028547126963, guid: f06112a375920b24291963a5f2111f7e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f06112a375920b24291963a5f2111f7e, type: 3}
 --- !u!1001 &1714784360
