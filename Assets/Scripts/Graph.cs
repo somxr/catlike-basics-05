@@ -8,6 +8,9 @@ public class Graph : MonoBehaviour {
 	[SerializeField, Range(10, 200)]
 	int resolution = 10;
 
+	[SerializeField, Min(1f)]
+	float scale = 1f;
+
 	[SerializeField]
 	FunctionLibrary.FunctionName function;
 
@@ -29,11 +32,11 @@ public class Graph : MonoBehaviour {
 
 	void Awake () {
 		float step = 2f / resolution;
-		var scale = Vector3.one * step;
+		var pointScale = Vector3.one * step * scale;
 		points = new Transform[resolution * resolution];
 		for (int i = 0; i < points.Length; i++) {
 			Transform point = points[i] = Instantiate(pointPrefab);
-			point.localScale = scale;
+			point.localScale = pointScale;
 			point.SetParent(transform, false);
 		}
 	}
@@ -79,7 +82,7 @@ public class Graph : MonoBehaviour {
 				v = (z + 0.5f) * step - 1f;
 			}
 			float u = (x + 0.5f) * step - 1f;
-			points[i].localPosition = f(u, v, time);
+			points[i].localPosition = f(u, v, time) * scale;
 		}
 	}
 
@@ -100,7 +103,7 @@ public class Graph : MonoBehaviour {
 			float u = (x + 0.5f) * step - 1f;
 			points[i].localPosition = FunctionLibrary.Morph(
 				u, v, time, from, to, progress
-			);
+			) * scale;
 		}
 	}
 }

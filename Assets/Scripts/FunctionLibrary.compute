@@ -17,7 +17,7 @@
 #pragma kernel RippleKernel
 #pragma kernel RippleToSphereKernel
 #pragma kernel RippleToTorusKernel
-#pragma kernel RippleToStarTorusKnotKernel
+#pragma kernel RippleToTorusKnotKernel
 
 #pragma kernel SphereToWaveKernel
 #pragma kernel SphereToMultiWaveKernel
@@ -42,7 +42,7 @@
 
 RWStructuredBuffer<float3> _Positions;
 uint _Resolution;
-float _Step, _Time, _TransitionProgress;
+float _Scale, _Step, _Time, _TransitionProgress;
 
 float2 GetUV (uint3 id) {
     return (id.xy + 0.5) * _Step - 1.0;
@@ -148,7 +148,7 @@ float3 TorusKnot (float u, float v, float t) {
     [numthreads(8, 8, 1)] \
     void function##Kernel (uint3 id: SV_DispatchThreadID) { \
         float2 uv = GetUV(id); \
-        SetPosition(id, function(uv.x, uv.y, _Time)); \
+        SetPosition(id, function(uv.x, uv.y, _Time) * _Scale); \
     }
 
 #define KERNEL_MORPH_FUNCTION(functionA, functionB) \
@@ -159,7 +159,7 @@ float3 TorusKnot (float u, float v, float t) {
             functionA(uv.x, uv.y, _Time), functionB(uv.x, uv.y, _Time), \
             _TransitionProgress \
         ); \
-        SetPosition(id, position); \
+        SetPosition(id, position * _Scale); \
     }
 
 // Each block must represent one "From" shape transitioning to all "To" shapes
