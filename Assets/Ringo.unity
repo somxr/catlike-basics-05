@@ -2119,9 +2119,9 @@ MonoBehaviour:
   mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   resolution: 305
   scale: 1750
-  function: 4
+  function: 3
   transitionMode: 0
-  functionDuration: 60
+  functionDuration: 30
   transitionDuration: 1
 --- !u!4 &1961126447
 Transform:

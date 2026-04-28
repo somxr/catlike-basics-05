@@ -1,44 +1,44 @@
-#pragma kernel WaveKernel
-#pragma kernel WaveToMultiWaveKernel
-#pragma kernel WaveToRippleKernel
-#pragma kernel WaveToSphereKernel
-#pragma kernel WaveToTorusKernel
-#pragma kernel WaveToTorusKnotKernel
-
-#pragma kernel MultiWaveToWaveKernel
-#pragma kernel MultiWaveKernel
-#pragma kernel MultiWaveToRippleKernel
-#pragma kernel MultiWaveToSphereKernel
-#pragma kernel MultiWaveToTorusKernel
-#pragma kernel MultiWaveToTorusKnotKernel
-
-#pragma kernel RippleToWaveKernel
-#pragma kernel RippleToMultiWaveKernel
-#pragma kernel RippleKernel
-#pragma kernel RippleToSphereKernel
-#pragma kernel RippleToTorusKernel
-#pragma kernel RippleToTorusKnotKernel
-
-#pragma kernel SphereToWaveKernel
-#pragma kernel SphereToMultiWaveKernel
-#pragma kernel SphereToRippleKernel
 #pragma kernel SphereKernel
 #pragma kernel SphereToTorusKernel
-#pragma kernel SphereToTorusKnotKernel
+#pragma kernel SphereToTorusOriginalKernel
+#pragma kernel SphereToTorusSpiralKernel
+#pragma kernel SphereToTorusPulseKernel
+#pragma kernel SphereToTorusCentrifugeKernel
 
-#pragma kernel TorusToWaveKernel
-#pragma kernel TorusToMultiWaveKernel
-#pragma kernel TorusToRippleKernel
 #pragma kernel TorusToSphereKernel
 #pragma kernel TorusKernel
-#pragma kernel TorusToTorusKnotKernel
+#pragma kernel TorusToTorusOriginalKernel
+#pragma kernel TorusToTorusSpiralKernel
+#pragma kernel TorusToTorusPulseKernel
+#pragma kernel TorusToTorusCentrifugeKernel
 
-#pragma kernel TorusKnotToWaveKernel
-#pragma kernel TorusKnotToMultiWaveKernel
-#pragma kernel TorusKnotToRippleKernel
-#pragma kernel TorusKnotToSphereKernel
-#pragma kernel TorusKnotToTorusKernel
-#pragma kernel TorusKnotKernel
+#pragma kernel TorusOriginalToSphereKernel
+#pragma kernel TorusOriginalToTorusKernel
+#pragma kernel TorusOriginalKernel
+#pragma kernel TorusOriginalToTorusSpiralKernel
+#pragma kernel TorusOriginalToTorusPulseKernel
+#pragma kernel TorusOriginalToTorusCentrifugeKernel
+
+#pragma kernel TorusSpiralToSphereKernel
+#pragma kernel TorusSpiralToTorusKernel
+#pragma kernel TorusSpiralToTorusOriginalKernel
+#pragma kernel TorusSpiralKernel
+#pragma kernel TorusSpiralToTorusPulseKernel
+#pragma kernel TorusSpiralToTorusCentrifugeKernel
+
+#pragma kernel TorusPulseToSphereKernel
+#pragma kernel TorusPulseToTorusKernel
+#pragma kernel TorusPulseToTorusOriginalKernel
+#pragma kernel TorusPulseToTorusSpiralKernel
+#pragma kernel TorusPulseKernel
+#pragma kernel TorusPulseToTorusCentrifugeKernel
+
+#pragma kernel TorusCentrifugeToSphereKernel
+#pragma kernel TorusCentrifugeToTorusKernel
+#pragma kernel TorusCentrifugeToTorusOriginalKernel
+#pragma kernel TorusCentrifugeToTorusSpiralKernel
+#pragma kernel TorusCentrifugeToTorusPulseKernel
+#pragma kernel TorusCentrifugeKernel
 
 RWStructuredBuffer<float3> _Positions;
 uint _Resolution;
@@ -58,35 +58,6 @@ void SetPosition (uint3 id, float3 position) {
 
 // --- MATH FUNCTIONS ---
 
-float3 Wave (float u, float v, float t) {
-    float3 p;
-    p.x = u;
-    p.y = sin(PI * (u + v + t));
-    p.z = v;
-    return p;
-}
-
-float3 MultiWave (float u, float v, float t) {
-    float3 p;
-    p.x = u;
-    p.y = sin(PI * (u + 0.5 * t));
-    p.y += 0.5 * sin(2.0 * PI * (v + t));
-    p.y += sin(PI * (u + v + 0.25 * t));
-    p.y *= 1.0 / 2.5;
-    p.z = v;
-    return p;
-}
-
-float3 Ripple (float u, float v, float t) {
-    float d = sqrt(u * u + v * v);
-    float3 p;
-    p.x = u;
-    p.y = sin(PI * (4.0 * d - t));
-    p.y /= 1.0 + 10.0 * d;
-    p.z = v;
-    return p;
-}
-
 float3 Sphere (float u, float v, float t) {
     float r = 0.9 + 0.1 * sin(PI * (12.0 * u + 8.0 * v + t));
     float s = r * cos(0.5 * PI * v);
@@ -97,62 +68,6 @@ float3 Sphere (float u, float v, float t) {
     return p;
 }
 
-/* --- TORUS VARIATIONS --- */
-
-/* 0. Original Version */
-// float3 Torus (float u, float v, float t) {
-//     float r1 = 0.7 + 0.1;
-//     float r2 = 0.15 + 0.05 * sin(PI * (50.0 * u  + 8.0 * v + 3.0 * t));
-//     float s = r2 * cos(PI * v) + r1;
-//     float3 p;
-//     p.x = s * sin(PI * u);
-//     p.y = r2 * sin(PI * v);
-//     p.z = s * cos(PI * u);
-//     return p;
-// }
-
-/* 1. The Double Spiral (Corkscrew Detail) */
-// float3 Torus (float u, float v, float t) {
-//     float r1 = 0.7;
-//     float r2 = 0.15 + 0.05 * sin(PI * (8.0 * u + 4.0 * v + 2.0 * t));
-//     float twist = sin(PI * (2.0 * u + t)); 
-//     float angle = PI * (v + twist);
-//     float s = r2 * cos(angle) + r1;
-//     float3 p;
-//     p.x = s * sin(PI * u);
-//     p.y = r2 * sin(angle);
-//     p.z = s * cos(PI * u);
-//     return p;
-// }
-
-/* 2. Travelling Pulse (Nested Volumes) */
-// float3 Torus (float u, float v, float t) {
-//     float r1 = 0.7;
-//     float bulge = 0.06 * sin(PI * (2.0 * u + 0.5 * t)); 
-//     float ripples = 0.02 * sin(PI * (20.0 * u + 10.0 * v + 4.0 * t));
-//     float r2 = 0.15 + bulge + ripples;
-//     float s = r2 * cos(PI * v) + r1;
-//     float3 p;
-//     p.x = s * sin(PI * u);
-//     p.y = r2 * sin(PI * v);
-//     p.z = s * cos(PI * u);
-//     return p;
-// }
-
-/* 3. The Centrifuge (Internal Orbit) */
-// float3 Torus (float u, float v, float t) {
-//     float r1 = 0.7;
-//     float r2 = 0.15 + 0.05 * sin(PI * (8.0 * u + t));
-//     float angle = PI * v + t; 
-//     float s = r2 * cos(angle) + r1;
-//     float3 p;
-//     p.x = s * sin(PI * u);
-//     p.y = r2 * sin(angle);
-//     p.z = s * cos(PI * u);
-//     return p;
-// }
-
-/* 4. Combined (The "Living" Torus) */
 float3 Torus (float u, float v, float t) {
     float r1 = 0.7 + 0.02 * sin(PI * (1.0 * u + 0.5 * t));
     float bulge = 0.05 * sin(PI * (4.0 * u + t));
@@ -168,40 +83,55 @@ float3 Torus (float u, float v, float t) {
     return p;
 }
 
-float3 TorusKnot (float u, float v, float t) {
-    // 1. Increase the speed
-    float speed = 1.0;
-    float time = t * speed;
-
-    float p_val = 2.0; 
-    float q_val = 3.0;
-    
-    // 2. Add 'time' to the 'u' winding to make the knot "roll" along its path
-    float phi = p_val * PI * u + time;
-    float theta = q_val * PI * u + time * 0.5;
-    
-    float r = 0.5 + 0.2 * sin(theta);
-    float r2 = 0.1 + 0.05 * sin(PI * (16.0 * u + 8.0 * v + 3.0 * time)); 
-    
-    // 3. Twist the tube itself by adding 'u' to the 'v' calculation
-    // This makes the points spiral around the tube as they travel
-    float tube_angle = PI * v + (u * 8.0); 
-    float s = r + r2 * cos(tube_angle);
-    
+float3 TorusOriginal (float u, float v, float t) {
+    float r1 = 0.7;
+    float r2 = 0.2 + 0.05 * sin(PI * (50.0 * u  + 8.0 * v + 3.0 * t));
+    float s = r2 * cos(PI * v) + r1;
     float3 p;
-    p.x = s * sin(phi);
-    p.y = r2 * sin(tube_angle) + 0.3 * cos(theta); 
-    p.z = s * cos(phi);
-    
-    // 4. "Twist Perspective": Rotate the entire result around the Y-axis over time
-    float rotationSpeed = time * 0.2;
-    float3 twistedP;
-    twistedP.x = p.x * cos(rotationSpeed) - p.z * sin(rotationSpeed);
-    twistedP.y = p.y;
-    twistedP.z = p.x * sin(rotationSpeed) + p.z * cos(rotationSpeed);
-    
-    return twistedP;
+    p.x = s * sin(PI * u);
+    p.y = r2 * sin(PI * v);
+    p.z = s * cos(PI * u);
+    return p;
 }
+
+float3 TorusSpiral (float u, float v, float t) {
+    float r1 = 0.7;
+    float r2 = 0.2 + 0.05 * sin(PI * (8.0 * u + 4.0 * v + 2.0 * t));
+    float twist = sin(PI * (2.0 * u + 0.2*t)); 
+    float angle = PI * (v + twist);
+    float s = r2 * cos(angle) + r1;
+    float3 p;
+    p.x = s * sin(PI * u);
+    p.y = r2 * sin(angle);
+    p.z = s * cos(PI * u);
+    return p;
+}
+
+float3 TorusPulse (float u, float v, float t) {
+    float r1 = 0.7;
+    float bulge = 0.03 * sin(PI * (2.0 * u + 0.5 * t)); 
+    float ripples = 0.02 * sin(PI * (20.0 * u + 10.0 * v + 4.0 * t));
+    float r2 = 0.2 + bulge + ripples;
+    float s = r2 * cos(PI * v) + r1;
+    float3 p;
+    p.x = s * sin(PI * u);
+    p.y = r2 * sin(PI * v);
+    p.z = s * cos(PI * u);
+    return p;
+}
+
+float3 TorusCentrifuge (float u, float v, float t) {
+    float r1 = 0.7;
+    float r2 = 0.2 + 0.05 * sin(PI * (8.0 * u + t));
+    float angle = PI * v + t; 
+    float s = r2 * cos(angle) + r1;
+    float3 p;
+    p.x = s * sin(PI * u);
+    p.y = r2 * sin(angle);
+    p.z = s * cos(PI * u);
+    return p;
+}
+
 // --- KERNEL GENERATION ---
 
 #define KERNEL_FUNCTION(function) \
@@ -222,51 +152,50 @@ float3 TorusKnot (float u, float v, float t) {
         SetPosition(id, position * _Scale); \
     }
 
-// Each block must represent one "From" shape transitioning to all "To" shapes
-// 0: Wave
-KERNEL_FUNCTION(Wave)
-KERNEL_MORPH_FUNCTION(Wave, MultiWave)
-KERNEL_MORPH_FUNCTION(Wave, Ripple)
-KERNEL_MORPH_FUNCTION(Wave, Sphere)
-KERNEL_MORPH_FUNCTION(Wave, Torus)
-KERNEL_MORPH_FUNCTION(Wave, TorusKnot)
-
-// 1: MultiWave
-KERNEL_MORPH_FUNCTION(MultiWave, Wave)
-KERNEL_FUNCTION(MultiWave)
-KERNEL_MORPH_FUNCTION(MultiWave, Ripple)
-KERNEL_MORPH_FUNCTION(MultiWave, Sphere)
-KERNEL_MORPH_FUNCTION(MultiWave, Torus)
-KERNEL_MORPH_FUNCTION(MultiWave, TorusKnot)
-
-// 2: Ripple
-KERNEL_MORPH_FUNCTION(Ripple, Wave)
-KERNEL_MORPH_FUNCTION(Ripple, MultiWave)
-KERNEL_FUNCTION(Ripple)
-KERNEL_MORPH_FUNCTION(Ripple, Sphere)
-KERNEL_MORPH_FUNCTION(Ripple, Torus)
-KERNEL_MORPH_FUNCTION(Ripple, TorusKnot)
-
-// 3: Sphere
-KERNEL_MORPH_FUNCTION(Sphere, Wave)
-KERNEL_MORPH_FUNCTION(Sphere, MultiWave)
-KERNEL_MORPH_FUNCTION(Sphere, Ripple)
+// 0: Sphere
 KERNEL_FUNCTION(Sphere)
 KERNEL_MORPH_FUNCTION(Sphere, Torus)
-KERNEL_MORPH_FUNCTION(Sphere, TorusKnot)
+KERNEL_MORPH_FUNCTION(Sphere, TorusOriginal)
+KERNEL_MORPH_FUNCTION(Sphere, TorusSpiral)
+KERNEL_MORPH_FUNCTION(Sphere, TorusPulse)
+KERNEL_MORPH_FUNCTION(Sphere, TorusCentrifuge)
 
-// 4: Torus
-KERNEL_MORPH_FUNCTION(Torus, Wave)
-KERNEL_MORPH_FUNCTION(Torus, MultiWave)
-KERNEL_MORPH_FUNCTION(Torus, Ripple)
+// 1: Torus
 KERNEL_MORPH_FUNCTION(Torus, Sphere)
 KERNEL_FUNCTION(Torus)
-KERNEL_MORPH_FUNCTION(Torus, TorusKnot)
+KERNEL_MORPH_FUNCTION(Torus, TorusOriginal)
+KERNEL_MORPH_FUNCTION(Torus, TorusSpiral)
+KERNEL_MORPH_FUNCTION(Torus, TorusPulse)
+KERNEL_MORPH_FUNCTION(Torus, TorusCentrifuge)
 
-// 5: TorusKnot
-KERNEL_MORPH_FUNCTION(TorusKnot, Wave)
-KERNEL_MORPH_FUNCTION(TorusKnot, MultiWave)
-KERNEL_MORPH_FUNCTION(TorusKnot, Ripple)
-KERNEL_MORPH_FUNCTION(TorusKnot, Sphere)
-KERNEL_MORPH_FUNCTION(TorusKnot, Torus)
-KERNEL_FUNCTION(TorusKnot)
+// 2: TorusOriginal
+KERNEL_MORPH_FUNCTION(TorusOriginal, Sphere)
+KERNEL_MORPH_FUNCTION(TorusOriginal, Torus)
+KERNEL_FUNCTION(TorusOriginal)
+KERNEL_MORPH_FUNCTION(TorusOriginal, TorusSpiral)
+KERNEL_MORPH_FUNCTION(TorusOriginal, TorusPulse)
+KERNEL_MORPH_FUNCTION(TorusOriginal, TorusCentrifuge)
+
+// 3: TorusSpiral
+KERNEL_MORPH_FUNCTION(TorusSpiral, Sphere)
+KERNEL_MORPH_FUNCTION(TorusSpiral, Torus)
+KERNEL_MORPH_FUNCTION(TorusSpiral, TorusOriginal)
+KERNEL_FUNCTION(TorusSpiral)
+KERNEL_MORPH_FUNCTION(TorusSpiral, TorusPulse)
+KERNEL_MORPH_FUNCTION(TorusSpiral, TorusCentrifuge)
+
+// 4: TorusPulse
+KERNEL_MORPH_FUNCTION(TorusPulse, Sphere)
+KERNEL_MORPH_FUNCTION(TorusPulse, Torus)
+KERNEL_MORPH_FUNCTION(TorusPulse, TorusOriginal)
+KERNEL_MORPH_FUNCTION(TorusPulse, TorusSpiral)
+KERNEL_FUNCTION(TorusPulse)
+KERNEL_MORPH_FUNCTION(TorusPulse, TorusCentrifuge)
+
+// 5: TorusCentrifuge
+KERNEL_MORPH_FUNCTION(TorusCentrifuge, Sphere)
+KERNEL_MORPH_FUNCTION(TorusCentrifuge, Torus)
+KERNEL_MORPH_FUNCTION(TorusCentrifuge, TorusOriginal)
+KERNEL_MORPH_FUNCTION(TorusCentrifuge, TorusSpiral)
+KERNEL_MORPH_FUNCTION(TorusCentrifuge, TorusPulse)
+KERNEL_FUNCTION(TorusCentrifuge)

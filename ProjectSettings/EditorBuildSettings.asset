@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Ringo.unity
+    guid: b78ddd5a3ba2b29479e4bd1ccc4740f3
   m_configObjects: {}
